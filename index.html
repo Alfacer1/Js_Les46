@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Погода</title>
+</head>
+<body>
+
+  <h1>Погода у місті:</h1>
+  <p id="city"></p>
+  <p id="temperature"></p>
+  <p id="pressure"></p>
+  <p id="description"></p>
+  <p id="humidity"></p>
+  <p id="wind-speed"></p>
+  <p id="wind-deg"></p>
+  <img id="weather-icon" alt="Weather Icon">
+
+  <script>
+    function getWeather(city) {
+      var apiKey = '5d066958a60d315387d9492393935c19';
+      var apiUrl = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&APPID=${apiKey}`;
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', apiUrl, true);
+
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          displayWeather(data);
+        }
+      };
+
+      xhr.send();
+    }
+
+    function displayWeather(data) {
+      function getById(id) {
+        return document.getElementById(id);
+      }
+
+      document.getElementById('city').innerText = 'Місто: ' + data.name;
+      document.getElementById('temperature').innerText = 'Температура: ' + data.main.temp + '°C';
+      document.getElementById('pressure').innerText = 'Тиск: ' + data.main.pressure + ' hPa';
+      document.getElementById('description').innerText = 'Опис: ' + data.weather[0].description;
+      document.getElementById('humidity').innerText = 'Вологість: ' + data.main.humidity + '%';
+      document.getElementById('wind-speed').innerText = 'Швидкість вітру: ' + data.wind.speed + ' м/с';
+      document.getElementById('wind-deg').innerText = 'Напрям вітру: ' + data.wind.deg + '°';
+
+      getById('weather-icon').src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
+    }
+
+    getWeather('Lviv');
+  </script>
+
+</body>
+</html>
+
